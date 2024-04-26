@@ -1,10 +1,12 @@
-import { BaseEntity } from '../../../common/entities/base.entity';
-
-export class CreateUserDto extends BaseEntity {
-  name: string;
+export class CreateUserDto {
+  id: number;
+  name?: string;
   username: string;
-  email: string;
+  email?: string;
+  mobile?: string;
   password: string;
-  avatar: string;
+  avatar?: string;
   language: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
