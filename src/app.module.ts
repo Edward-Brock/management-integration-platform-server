@@ -10,7 +10,7 @@ import { HealthModule } from './modules/health/health.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
+      envFilePath: ['.env.production.local', '.env.development.local', '.env'],
     }),
     UsersModule,
     HealthModule,
