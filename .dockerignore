@@ -1,0 +1,12 @@
+# Generated dirs
+dist
+
+# Node dependencies
+node_modules
+
+# System files
+*.log
+
+# Git
+.git
+.gitignore

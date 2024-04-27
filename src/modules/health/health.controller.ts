@@ -27,18 +27,27 @@ export class HealthController {
     /**
      * 判断当前系统环境，若为 Windows 则使用 "D:\" 否则使用 "/"
      */
-    let storagePath: string;
-    if (platform() === 'win32') {
-      storagePath = 'D:\\';
-    } else {
-      storagePath = '/';
-    }
+    const getStoragePath = () => {
+      let storagePath: string;
+      return () => {
+        if (!storagePath) {
+          if (platform() === 'win32') {
+            storagePath = 'D:\\';
+          } else {
+            storagePath = '/';
+          }
+        }
+        return storagePath;
+      };
+    };
+
+    const storagePathGetter = getStoragePath(); // 获取惰性函数
 
     return this.health.check([
       () => this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
       () =>
         this.disk.checkStorage('storage', {
-          path: storagePath,
+          path: storagePathGetter(),
           thresholdPercent: 0.5,
         }),
       () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
