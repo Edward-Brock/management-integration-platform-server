@@ -30,7 +30,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
+  @Get(':username')
   @ApiOkResponse({ type: UserEntity })
   findOne(@Param('username') username: string) {
     return this.usersService.findOne(username);
