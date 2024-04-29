@@ -14,7 +14,10 @@ import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.production.local', '.env.development.local', '.env'],
+      envFilePath:
+        process.env.NODE_ENV === 'DEVELOPMENT'
+          ? '.env.development.local'
+          : '.env.production.local',
     }),
     AuthModule,
     UsersModule,
