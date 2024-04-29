@@ -9,6 +9,7 @@ import {
 } from '@nestjs/terminus';
 import { PrismaService } from '../prisma/prisma.service';
 import { platform } from 'os';
+import { Public } from '../auth/constants';
 
 @Controller('health')
 export class HealthController {
@@ -21,6 +22,7 @@ export class HealthController {
     private prisma: PrismaService,
   ) {}
 
+  @Public()
   @Get()
   @HealthCheck()
   check() {

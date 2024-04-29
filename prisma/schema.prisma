@@ -14,15 +14,24 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+enum USER_STATUS {
+  ACTIVE // 活跃状态
+  SUSPENDED // 停用状态
+  LOCKED // 锁定状态
+  INACTIVE // 注销（删除）状态
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
+  uid       String      @default(uuid())
   name      String?
-  username  String   @unique
-  email     String?  @unique
-  mobile    String?  @unique
+  username  String      @unique
+  email     String?     @unique
+  mobile    String?     @unique
   password  String
-  avatar    String?  @db.Text
-  language  String   @default("zh-cn")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  avatar    String?     @db.Text
+  language  String      @default("zh-cn")
+  status    USER_STATUS @default(ACTIVE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }

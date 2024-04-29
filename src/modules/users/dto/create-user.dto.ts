@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsEnum,
   IsMobilePhone,
   IsNotEmpty,
   IsOptional,
@@ -7,9 +8,11 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { UserStatusEnum } from '../enum/user-status.enum';
 
 export class CreateUserDto {
   id: number;
+  uid: string;
   @IsOptional()
   @IsString()
   name?: string;
@@ -33,6 +36,9 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   language: string;
+  @IsNotEmpty()
+  @IsEnum(UserStatusEnum)
+  status: UserStatusEnum;
   createdAt: Date;
   updatedAt: Date;
 }
