@@ -36,6 +36,7 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   language: string;
+  @IsOptional()
   @IsNotEmpty()
   @IsEnum(UserStatusEnum)
   status: UserStatusEnum;

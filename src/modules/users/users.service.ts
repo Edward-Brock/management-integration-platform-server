@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -7,16 +6,6 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
-
-  async create(createUserDto: CreateUserDto) {
-    // 检查是否存在相同用户名
-    const existingUser = await this.findOne(createUserDto.username);
-    if (existingUser) {
-      throw new Error('Username already exists');
-    }
-    createUserDto.password = await this.hashPassword(createUserDto.password);
-    return this.prisma.user.create({ data: createUserDto });
-  }
 
   findAll() {
     return this.prisma.user.findMany();

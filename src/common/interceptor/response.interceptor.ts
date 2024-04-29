@@ -16,6 +16,7 @@ export class ResponseInterceptor implements NestInterceptor {
       map((data) => ({
         code: 200,
         message: 'Success',
+        timestamp: new Date(),
         data,
       })),
       catchError((error) => this.handleError(error)),
@@ -24,11 +25,11 @@ export class ResponseInterceptor implements NestInterceptor {
 
   private handleError(error: any): Observable<any> {
     let code = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
+    let message: any = 'Internal server error';
 
     if (error instanceof HttpException) {
       code = error.getStatus();
-      message = error.message || 'Internal server error';
+      message = error.getResponse();
     } else {
       console.error('Interceptor error:', error);
     }
