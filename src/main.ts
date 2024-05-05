@@ -34,7 +34,7 @@ async function bootstrap() {
   await app.listen(http_port);
   console.log(`
   ============================================================
-  → ENVIRONMENT: ${server_env}
+  → ENVIRONMENT: \x1b[41m${server_env}\x1b[0m
   ✔ HTTP SERVICE STARTED - ${serverAddress}
   ============================================================
   `);

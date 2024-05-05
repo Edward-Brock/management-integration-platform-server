@@ -25,4 +25,4 @@ COPY --from=builder /app .
 
 EXPOSE 3020
 
-CMD [ "node", "dist/main.js" ]
+CMD [ "pnpm", "start:prod" ]
