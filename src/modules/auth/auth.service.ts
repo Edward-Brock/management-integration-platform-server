@@ -14,7 +14,11 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
+    const user = await this.prisma.user.findUnique({ where: { username } });
+    // 判断是否存在用户
+    if (!user) {
+      return null;
+    }
     const isMatch = await bcrypt.compare(pass, user.password);
     if (user && isMatch) {
       const { password, ...result } = user;
@@ -25,13 +29,18 @@ export class AuthService {
 
   async register(createUserDto: CreateUserDto) {
     // 检查是否存在相同用户名
-    const existingUser = await this.usersService.findOne(
-      createUserDto.username,
-    );
+    const username = createUserDto.username;
+    const existingUser = await this.prisma.user.findUnique({
+      where: { username },
+    });
     if (existingUser) {
       throw new Error('Username already exists');
     }
     createUserDto.password = await this.hashPassword(createUserDto.password);
+    console.log('AUTH: USER REGISTER', {
+      username: createUserDto.username,
+      date: new Date(),
+    });
     return this.prisma.user.create({ data: createUserDto });
   }
 
@@ -43,6 +52,10 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.uid };
+    console.log('AUTH: USER LOGIN', {
+      username: user.username,
+      date: new Date(),
+    });
     return {
       access_token: this.jwtService.sign(payload),
     };

@@ -15,10 +15,10 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':username')
+  @Get(':uid')
   @ApiOkResponse({ type: UserEntity })
-  findOne(@Param('username') username: string) {
-    return this.usersService.findOne(username);
+  findOne(@Param('uid') uid: string) {
+    return this.usersService.findOne(uid);
   }
 
   @Patch(':id')
