@@ -29,7 +29,6 @@ export class AuthController {
   @ApiBody({ type: CreateUserDto })
   @ApiCreatedResponse({ type: UserEntity })
   register(@Body() createUserDto: CreateUserDto) {
-    console.log('AUTH: USER REGISTER');
     return this.authService.register(createUserDto);
   }
 
@@ -51,7 +50,6 @@ export class AuthController {
   })
   @Post('login')
   async login(@Request() req) {
-    console.log('AUTH: USER LOGIN');
     return this.authService.login(req.user);
   }
 

@@ -23,7 +23,7 @@ enum USER_STATUS {
 
 model User {
   id        Int         @id @default(autoincrement())
-  uid       String      @default(uuid())
+  uid       String      @unique @default(uuid())
   name      String?
   username  String      @unique
   email     String?     @unique

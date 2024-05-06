@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as fs from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,8 @@ async function bootstrap() {
   const server_env = configService.get('SERVER_ENV');
   const http_url = configService.get('SERVER_URL');
   const http_port = configService.get('SERVER_PORT');
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  const version = packageJson.version;
   /**
    * 根据环境变量文件内的 SERVER_ENV 进行判断
    * 若为 development 则为开发环境，对 http_url 及 http_port 进行拼接
@@ -35,6 +38,7 @@ async function bootstrap() {
   console.log(`
   ============================================================
   → ENVIRONMENT: \x1b[41m${server_env}\x1b[0m
+  № SERVER VERSION - ${version}
   ✔ HTTP SERVICE STARTED - ${serverAddress}
   ============================================================
   `);
