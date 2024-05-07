@@ -9,6 +9,7 @@ import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
+import { OptionsModule } from './modules/options/options.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
           ? '.env.development.local'
           : '.env.production.local',
     }),
+    OptionsModule,
     AuthModule,
     UsersModule,
     HealthModule,
