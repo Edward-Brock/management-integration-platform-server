@@ -12,14 +12,20 @@ export class UsersService {
   }
 
   findOne(uid: string) {
+    console.log('USERS: USER FIND', {
+      uid: uid,
+      date: new Date(),
+    });
+
     return this.prisma.user.findUnique({ where: { uid } });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(uid: string, updateUserDto: UpdateUserDto) {
+    console.log(uid);
     const { password, ...rest } = updateUserDto;
     // 检查是否包含密码字段
     if ('password' in updateUserDto) {
-      await this.updatePassword(id, password);
+      await this.updatePassword(uid, password);
     }
 
     // 合并密码字段和其他字段
@@ -28,16 +34,22 @@ export class UsersService {
       ...rest, // 其他字段
     };
 
+    console.log('USERS: USER UPDATE', {
+      uid: uid,
+      data: dataToUpdate,
+      date: new Date(),
+    });
+
     return this.prisma.user.update({
-      where: { id },
+      where: { uid },
       data: dataToUpdate,
     });
   }
 
-  private async updatePassword(id: number, newPassword: string) {
+  private async updatePassword(uid: string, newPassword: string) {
     const hashedPassword = await this.hashPassword(newPassword);
     return this.prisma.user.update({
-      where: { id },
+      where: { uid },
       data: {
         password: hashedPassword,
       },
@@ -50,7 +62,12 @@ export class UsersService {
     return password;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(uid: string) {
+    console.log('USERS: USER DELETE', {
+      uid: uid,
+      date: new Date(),
+    });
+
+    return this.update(uid, <UpdateUserDto>{ status: 'INACTIVE' });
   }
 }

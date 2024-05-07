@@ -21,15 +21,15 @@ export class UsersController {
     return this.usersService.findOne(uid);
   }
 
-  @Patch(':id')
+  @Patch(':uid')
   @ApiCreatedResponse({ type: UserEntity })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param('uid') uid: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(uid, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete(':uid')
   @ApiOkResponse({ type: UserEntity })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  remove(@Param('uid') uid: string) {
+    return this.usersService.remove(uid);
   }
 }
