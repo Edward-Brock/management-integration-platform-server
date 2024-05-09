@@ -10,6 +10,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
 import { OptionsModule } from './modules/options/options.module';
+import { SettingsModule } from './modules/users/settings/settings.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { OptionsModule } from './modules/options/options.module';
           ? '.env.development.local'
           : '.env.production.local',
     }),
+    SettingsModule,
     OptionsModule,
     AuthModule,
     UsersModule,

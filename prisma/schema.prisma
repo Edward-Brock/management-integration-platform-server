@@ -38,8 +38,15 @@ model User {
   language  String      @default("zh-cn")
   role      USER_ROLE   @default(USER)
   status    USER_STATUS @default(ACTIVE)
+  setting   Setting?
   createdAt DateTime    @default(dbgenerated("NOW()")) @db.DateTime
   updatedAt DateTime    @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
+}
+
+model Setting {
+  background String? @db.Text
+  user       User    @relation(fields: [userUid], references: [uid])
+  userUid    String  @unique
 }
 
 model Option {
