@@ -5,12 +5,13 @@ import {
   ExtractSubjectType,
   InferSubjects,
 } from '@casl/ability';
-import { Action } from './actions.enum';
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { UsersService } from '../users/users.service';
+import { Action } from './actions.enum';
+import { UserEntity } from '../users/entities/user.entity';
+import { SettingEntity } from '../users/settings/entities/setting.entity';
 
-type Subjects = InferSubjects<typeof UsersService> | 'all';
+type Subjects = InferSubjects<typeof SettingEntity | typeof UserEntity> | 'all';
 
 export type AppAbility = Ability<[Action, Subjects]>;
 
@@ -21,12 +22,17 @@ export class CaslAbilityFactory {
       Ability as AbilityClass<AppAbility>,
     );
 
+    console.log(
+      `当前用户：${user.username}，UID为：${user.uid}，权限为：${user.role}`,
+    );
+
     switch (user.role) {
       case 'ADMIN':
         can(Action.Manage, 'all');
         break;
       case 'USER':
-        can(Action.Read, UsersService, user.uid);
+        can(Action.Read, SettingEntity, { userUid: user.uid });
+        can(Action.Update, SettingEntity, { userUid: user.uid });
         break;
     }
 
