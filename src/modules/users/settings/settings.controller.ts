@@ -24,6 +24,30 @@ export class SettingsController {
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
+  /**
+   * 私有方法，用于检查用户对设置执行特定操作的权限。
+   * @param user 正在检查权限的用户对象。
+   * @param action 正在执行的设置操作（例如，Read、Update）。
+   * @param uid 可选。适用的设置实体的 UID。
+   * @throws ForbiddenException 如果用户没有执行指定操作的权限。
+   */
+  private checkPermission(user, action: Action, uid?: string) {
+    // 创建给定用户的 Casl 能力
+    const ability = this.caslAbilityFactory.createForUser(user);
+    // 创建 SettingEntity 的新实例
+    const settings = new SettingEntity();
+    // 如果提供了 UID，则将其分配给设置实体的 userUid 属性
+    if (uid) {
+      settings.userUid = uid;
+    }
+    // 检查用户是否有权限在设置上执行指定的操作
+    if (!ability.can(action, settings)) {
+      // 如果不允许，构造错误消息并抛出 ForbiddenException
+      const errorMessage = `You are not allowed to ${action.toUpperCase()} settings`;
+      throw new ForbiddenException(errorMessage);
+    }
+  }
+
   @Post()
   create(@Body() createSettingDto: CreateSettingDto) {
     return this.settingsService.create(createSettingDto);
@@ -31,31 +55,13 @@ export class SettingsController {
 
   @Get()
   findAll(@Request() req) {
-    // 获取当前用户的能力
-    const ability = this.caslAbilityFactory.createForUser(req.user);
-    // 如果用户不是管理员，则创建一个只包含当前用户的临时对象
-    let settings: SettingEntity | undefined;
-    if (req.user.role !== 'ADMIN') {
-      settings = { userUid: req.user.uid } as SettingEntity;
-    }
-    // 判断当前用户是否有权限读取设置信息
-    if (!ability.can(Action.Read, settings)) {
-      throw new ForbiddenException('You are not allowed to findAll settings');
-    }
-    // 如果有权限，就执行相应的操作
+    this.checkPermission(req.user, Action.Read);
     return this.settingsService.findAll();
   }
 
   @Get(':uid')
   findOne(@Param('uid') uid: string, @Request() req) {
-    const ability = this.caslAbilityFactory.createForUser(req.user);
-    const settings = new SettingEntity();
-    settings.userUid = uid;
-    // 判断当前用户是否有权限读取指定的设置信息
-    if (!ability.can(Action.Read, settings)) {
-      throw new ForbiddenException('You are not allowed to findOne settings');
-    }
-    // 如果有权限，就执行相应的操作
+    this.checkPermission(req.user, Action.Read, uid);
     return this.settingsService.findOne(uid);
   }
 
@@ -65,14 +71,7 @@ export class SettingsController {
     @Body() updateSettingDto: UpdateSettingDto,
     @Request() req,
   ) {
-    const ability = this.caslAbilityFactory.createForUser(req.user);
-    const settings = new SettingEntity();
-    settings.userUid = uid;
-    // 判断当前用户是否有权限读取指定的设置信息
-    if (!ability.can(Action.Update, settings)) {
-      throw new ForbiddenException('You are not allowed to update settings');
-    }
-    // 如果有权限，就执行相应的操作
+    this.checkPermission(req.user, Action.Update, uid);
     return this.settingsService.update(uid, updateSettingDto);
   }
 }
