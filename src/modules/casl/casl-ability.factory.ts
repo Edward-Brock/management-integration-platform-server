@@ -22,15 +22,19 @@ export class CaslAbilityFactory {
       Ability as AbilityClass<AppAbility>,
     );
 
-    console.log(
-      `当前用户：${user.username}，UID为：${user.uid}，权限为：${user.role}`,
-    );
+    console.log('CASL ABILITY:', {
+      username: user.username,
+      uid: user.uid,
+      role: user.role,
+    });
 
     switch (user.role) {
       case 'ADMIN':
         can(Action.Manage, 'all');
         break;
       case 'USER':
+        can(Action.Read, UserEntity, { uid: user.uid });
+        can(Action.Update, UserEntity, { uid: user.uid });
         can(Action.Read, SettingEntity, { userUid: user.uid });
         can(Action.Update, SettingEntity, { userUid: user.uid });
         break;
