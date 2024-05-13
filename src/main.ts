@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as fs from 'fs';
+import * as chalk from 'chalk';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -37,7 +38,7 @@ async function bootstrap() {
   await app.listen(http_port);
   console.log(`
   ============================================================
-  → ENVIRONMENT - \x1b[41m${server_env}\x1b[0m
+  → ENVIRONMENT - ${chalk.bgRed(server_env)}
   № SERVER VERSION - ${version}
   ✔ HTTP SERVICE STARTED - ${serverAddress}
   ============================================================

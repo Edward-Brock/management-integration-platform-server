@@ -14,7 +14,6 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 import { Action } from '../casl/actions.enum';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory';
-import { SettingEntity } from './settings/entities/setting.entity';
 
 @Controller('users')
 @ApiTags('users')

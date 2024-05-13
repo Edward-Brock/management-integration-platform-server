@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -7,7 +7,7 @@ import { SettingsModule } from './settings/settings.module';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, CaslAbilityFactory],
+  providers: [UsersService, CaslAbilityFactory, Logger],
   imports: [PrismaModule, SettingsModule],
   exports: [UsersService],
 })

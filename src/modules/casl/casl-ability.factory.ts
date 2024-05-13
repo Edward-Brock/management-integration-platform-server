@@ -22,12 +22,6 @@ export class CaslAbilityFactory {
       Ability as AbilityClass<AppAbility>,
     );
 
-    console.log('CASL ABILITY:', {
-      username: user.username,
-      uid: user.uid,
-      role: user.role,
-    });
-
     switch (user.role) {
       case 'ADMIN':
         can(Action.Manage, 'all');

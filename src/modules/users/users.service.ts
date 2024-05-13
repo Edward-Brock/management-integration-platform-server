@@ -1,27 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import * as path from 'node:path';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly logger: Logger,
+  ) {}
 
   findAll() {
     return this.prisma.user.findMany();
   }
 
   findOne(uid: string) {
-    console.log('USERS: USER FIND', {
-      uid: uid,
-      date: new Date(),
-    });
+    this.logger.log(`USER FIND - ${uid}`, path.basename(__filename));
 
     return this.prisma.user.findUnique({ where: { uid } });
   }
 
   async update(uid: string, updateUserDto: UpdateUserDto) {
-    console.log(uid);
     const { password, ...rest } = updateUserDto;
     // 检查是否包含密码字段
     if ('password' in updateUserDto) {
@@ -34,11 +34,10 @@ export class UsersService {
       ...rest, // 其他字段
     };
 
-    console.log('USERS: USER UPDATE', {
-      uid: uid,
-      data: dataToUpdate,
-      date: new Date(),
-    });
+    this.logger.log(
+      `USER UPDATE - ${uid} - ${dataToUpdate}`,
+      path.basename(__filename),
+    );
 
     return this.prisma.user.update({
       where: { uid },
@@ -63,10 +62,7 @@ export class UsersService {
   }
 
   remove(uid: string) {
-    console.log('USERS: USER DELETE', {
-      uid: uid,
-      date: new Date(),
-    });
+    this.logger.log(`USER DELETE - ${uid}`, path.basename(__filename));
 
     return this.update(uid, <UpdateUserDto>{ status: 'INACTIVE' });
   }
