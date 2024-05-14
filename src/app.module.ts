@@ -11,9 +11,9 @@ import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
 import { OptionsModule } from './modules/options/options.module';
 import { SettingsModule } from './modules/users/settings/settings.module';
 import { WinstonModule } from 'nest-winston';
-import winstonConfig from './config/Winston.config';
-import { UnifyResponseInterceptor } from './middleware/interceptor/unify-response.interceptor';
-import UnifyExceptionFilter from './middleware/filter/uinify-exception.filter';
+import winstonConfig from './config/winston.config';
+import { GlobalResponseInterceptor } from './middleware/interceptor/global-response.interceptor';
+import GlobalExceptionFilter from './middleware/filter/global-exception.filter';
 
 @Module({
   imports: [
@@ -39,12 +39,12 @@ import UnifyExceptionFilter from './middleware/filter/uinify-exception.filter';
     // 应用全局过滤器
     {
       provide: APP_FILTER,
-      useClass: UnifyExceptionFilter,
+      useClass: GlobalExceptionFilter,
     },
     // 应用拦截器
     {
       provide: APP_INTERCEPTOR,
-      useClass: UnifyResponseInterceptor,
+      useClass: GlobalResponseInterceptor,
     },
     // 启用全局身份验证（Authentication）
     {
