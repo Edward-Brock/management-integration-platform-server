@@ -50,7 +50,7 @@ model Setting {
 }
 
 model Option {
-  id    Int     @id @default(autoincrement())
-  name  String  @unique
-  value String? @db.Text
+  name     String  @unique
+  value    String? @db.Text
+  autoload Boolean @default(false)
 }

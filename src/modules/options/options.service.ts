@@ -2,15 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { CreateOptionDto } from './dto/create-option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import * as fs from 'fs';
 
 @Injectable()
 export class OptionsService {
   constructor(private prisma: PrismaService) {}
 
-  getVersion() {
-    const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-    return packageJson.version;
+  async autoload() {
+    return this.prisma.option.findMany({
+      where: {
+        autoload: true,
+      },
+    });
   }
 
   create(createOptionDto: CreateOptionDto) {
@@ -25,14 +27,14 @@ export class OptionsService {
     return this.prisma.option.findUnique({ where: { name } });
   }
 
-  update(id: number, updateOptionDto: UpdateOptionDto) {
+  update(name: string, updateOptionDto: UpdateOptionDto) {
     return this.prisma.option.update({
-      where: { id },
+      where: { name },
       data: updateOptionDto,
     });
   }
 
-  remove(id: number) {
-    return this.prisma.option.delete({ where: { id } });
+  remove(name: string) {
+    return this.prisma.option.delete({ where: { name } });
   }
 }

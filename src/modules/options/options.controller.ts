@@ -22,9 +22,9 @@ export class OptionsController {
    * 获取当前服务端运行版本
    */
   @Public()
-  @Get('version')
-  getVersion() {
-    return this.optionsService.getVersion();
+  @Get('autoload')
+  autoload() {
+    return this.optionsService.autoload();
   }
 
   @Post()
@@ -42,13 +42,16 @@ export class OptionsController {
     return this.optionsService.findOne(name);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOptionDto: UpdateOptionDto) {
-    return this.optionsService.update(+id, updateOptionDto);
+  @Patch(':name')
+  update(
+    @Param('name') name: string,
+    @Body() updateOptionDto: UpdateOptionDto,
+  ) {
+    return this.optionsService.update(name, updateOptionDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.optionsService.remove(+id);
+  @Delete(':name')
+  remove(@Param('name') name: string) {
+    return this.optionsService.remove(name);
   }
 }
