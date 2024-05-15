@@ -1,9 +1,8 @@
-import { Logger, Injectable } from '@nestjs/common';
+import { Logger, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import * as path from 'node:path';
 
 @Injectable()
 export class AuthService {
@@ -34,13 +33,11 @@ export class AuthService {
       where: { username },
     });
     if (existingUser) {
-      throw new Error('Username already exists');
+      this.logger.log(`USERNAME ALREADY EXISTS - ${username}`, 'AuthService');
+      throw new UnauthorizedException(`User ${username} already exist`);
     }
     createUserDto.password = await this.hashPassword(createUserDto.password);
-    this.logger.log('AUTH: USER REGISTER', {
-      username: createUserDto.username,
-      date: new Date(),
-    });
+    this.logger.log(`USER REGISTER - ${username}`, 'AuthService');
     return this.prisma.user.create({ data: createUserDto });
   }
 
@@ -52,12 +49,16 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.uid, role: user.role };
+    const token = this.jwtService.sign(payload);
+    const decodedToken = this.jwtService.decode(token) as any;
     this.logger.log(
       `USER LOGIN - ${user.uid} - ${user.username} - ${user.role}`,
-      path.basename(__filename),
+      'AuthService',
     );
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: token,
+      exp: decodedToken.exp,
+      iat: decodedToken.iat,
     };
   }
 }

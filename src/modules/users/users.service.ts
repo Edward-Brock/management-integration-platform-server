@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import * as path from 'node:path';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +15,7 @@ export class UsersService {
   }
 
   findOne(uid: string) {
-    this.logger.log(`USER FIND - ${uid}`, path.basename(__filename));
+    this.logger.log(`USER FIND - ${uid}`, 'UsersService');
 
     return this.prisma.user.findUnique({ where: { uid } });
   }
@@ -34,10 +33,7 @@ export class UsersService {
       ...rest, // 其他字段
     };
 
-    this.logger.log(
-      `USER UPDATE - ${uid} - ${dataToUpdate}`,
-      path.basename(__filename),
-    );
+    this.logger.log(`USER UPDATE - ${uid} - ${dataToUpdate}`, 'UsersService');
 
     return this.prisma.user.update({
       where: { uid },
@@ -62,7 +58,7 @@ export class UsersService {
   }
 
   remove(uid: string) {
-    this.logger.log(`USER DELETE - ${uid}`, path.basename(__filename));
+    this.logger.log(`USER DELETE - ${uid}`, 'UsersService');
 
     return this.update(uid, <UpdateUserDto>{ status: 'INACTIVE' });
   }
