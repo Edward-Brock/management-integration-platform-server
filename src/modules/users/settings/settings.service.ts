@@ -15,13 +15,13 @@ export class SettingsService {
     return this.prisma.setting.findMany();
   }
 
-  findOne(userUid: string) {
-    return this.prisma.setting.findUnique({ where: { userUid } });
+  findOne(userId: string) {
+    return this.prisma.setting.findUnique({ where: { userId } });
   }
 
-  update(userUid: string, updateSettingDto: UpdateSettingDto) {
+  update(userId: string, updateSettingDto: UpdateSettingDto) {
     return this.prisma.setting.update({
-      where: { userUid },
+      where: { userId },
       data: updateSettingDto,
     });
   }

@@ -9,11 +9,9 @@ import {
   MinLength,
 } from 'class-validator';
 import { UserStatusEnum } from '../enum/user-status.enum';
-import { UserRoleEnum } from '../enum/user-role.enum';
 
 export class CreateUserDto {
-  id: number;
-  uid: string;
+  id: string;
   @IsOptional()
   @IsString()
   name?: string;
@@ -37,10 +35,6 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   language: string;
-  @IsOptional()
-  @IsNotEmpty()
-  @IsEnum(UserRoleEnum)
-  role: UserRoleEnum;
   @IsOptional()
   @IsNotEmpty()
   @IsEnum(UserStatusEnum)

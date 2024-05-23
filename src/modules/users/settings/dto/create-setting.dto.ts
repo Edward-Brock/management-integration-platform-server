@@ -1,4 +1,5 @@
 export class CreateSettingDto {
+  language: string;
   background?: string;
-  userUid: string;
+  userId: string;
 }

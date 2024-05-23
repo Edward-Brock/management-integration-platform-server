@@ -14,17 +14,17 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  findOne(uid: string) {
-    this.logger.log(`USER FIND - ${uid}`, 'UsersService');
+  findOne(id: string) {
+    this.logger.log(`USER FIND - ${id}`, 'UsersService');
 
-    return this.prisma.user.findUnique({ where: { uid } });
+    return this.prisma.user.findUnique({ where: { id } });
   }
 
-  async update(uid: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const { password, ...rest } = updateUserDto;
     // 检查是否包含密码字段
     if ('password' in updateUserDto) {
-      await this.updatePassword(uid, password);
+      await this.updatePassword(id, password);
     }
 
     // 合并密码字段和其他字段
@@ -33,18 +33,18 @@ export class UsersService {
       ...rest, // 其他字段
     };
 
-    this.logger.log(`USER UPDATE - ${uid} - ${dataToUpdate}`, 'UsersService');
+    this.logger.log(`USER UPDATE - ${id} - ${dataToUpdate}`, 'UsersService');
 
     return this.prisma.user.update({
-      where: { uid },
+      where: { id },
       data: dataToUpdate,
     });
   }
 
-  private async updatePassword(uid: string, newPassword: string) {
+  private async updatePassword(id: string, newPassword: string) {
     const hashedPassword = await this.hashPassword(newPassword);
     return this.prisma.user.update({
-      where: { uid },
+      where: { id },
       data: {
         password: hashedPassword,
       },
@@ -57,9 +57,9 @@ export class UsersService {
     return password;
   }
 
-  remove(uid: string) {
-    this.logger.log(`USER DELETE - ${uid}`, 'UsersService');
+  remove(id: string) {
+    this.logger.log(`USER DELETE - ${id}`, 'UsersService');
 
-    return this.update(uid, <UpdateUserDto>{ status: 'INACTIVE' });
+    return this.update(id, <UpdateUserDto>{ status: 'INACTIVE' });
   }
 }

@@ -38,7 +38,11 @@ export class AuthService {
     }
     createUserDto.password = await this.hashPassword(createUserDto.password);
     this.logger.log(`USER REGISTER - ${username}`, 'AuthService');
-    return this.prisma.user.create({ data: createUserDto });
+    return this.prisma.user.create({
+      data: {
+        ...createUserDto,
+      },
+    });
   }
 
   private async hashPassword(password: string): Promise<string> {
@@ -48,7 +52,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.uid, role: user.role };
+    const payload = { username: user.username, sub: user.id, role: user.role };
     const token = this.jwtService.sign(payload);
     const decodedToken = this.jwtService.decode(token) as any;
     this.logger.log(

@@ -14,6 +14,8 @@ import { WinstonModule } from 'nest-winston';
 import winstonConfig from './config/winston.config';
 import { GlobalResponseInterceptor } from './middleware/interceptor/global-response.interceptor';
 import GlobalExceptionFilter from './middleware/filter/global-exception.filter';
+import { RolesModule } from './modules/users/roles/roles.module';
+import { PermissionsModule } from './modules/users/permissions/permissions.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import GlobalExceptionFilter from './middleware/filter/global-exception.filter';
           ? '.env.development.local'
           : '.env.production.local',
     }),
+    PermissionsModule,
+    RolesModule,
     SettingsModule,
     OptionsModule,
     AuthModule,

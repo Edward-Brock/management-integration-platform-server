@@ -1,56 +1,35 @@
-import {
-  Controller,
-  Get,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Request,
-} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
-import { Action } from '../casl/actions.enum';
-import { CaslGuard } from '../../middleware/guard/casl.guard';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private caslGuard: CaslGuard,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @ApiOkResponse({ type: UserEntity, isArray: true })
-  findAll(@Request() req) {
-    this.caslGuard.canActivate(req.user, Action.Read, UserEntity);
+  findAll() {
     return this.usersService.findAll();
   }
 
-  @Get(':uid')
+  @Get(':id')
   @ApiOkResponse({ type: UserEntity })
-  findOne(@Param('uid') uid: string, @Request() req) {
-    this.caslGuard.canActivate(req.user, Action.Read, UserEntity, uid);
-    return this.usersService.findOne(uid);
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
   }
 
-  @Patch(':uid')
+  @Patch(':id')
   @ApiCreatedResponse({ type: UserEntity })
-  update(
-    @Param('uid') uid: string,
-    @Body() updateUserDto: UpdateUserDto,
-    @Request() req,
-  ) {
-    this.caslGuard.canActivate(req.user, Action.Update, UserEntity, uid);
-    return this.usersService.update(uid, updateUserDto);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':uid')
+  @Delete(':id')
   @ApiOkResponse({ type: UserEntity })
-  remove(@Param('uid') uid: string, @Request() req) {
-    this.caslGuard.canActivate(req.user, Action.Delete, UserEntity, uid);
-    return this.usersService.remove(uid);
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
   }
 }
