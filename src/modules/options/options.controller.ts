@@ -6,17 +6,26 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { OptionsService } from './options.service';
 import { CreateOptionDto } from './dto/create-option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from '../auth/constants';
+import { RolesGuard } from '../../middleware/guard/roles.guard';
+import { DynamicRoles } from '../../middleware/role/roles.decorator';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('options')
 @ApiTags('options')
+@DynamicRoles('ADMIN')
+@UseGuards(RolesGuard)
 export class OptionsController {
-  constructor(private readonly optionsService: OptionsService) {}
+  constructor(
+    private readonly optionsService: OptionsService,
+    private prisma: PrismaService,
+  ) {}
 
   /**
    * 获取当前标记自动加载的数据
@@ -33,7 +42,7 @@ export class OptionsController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.optionsService.findAll();
   }
 

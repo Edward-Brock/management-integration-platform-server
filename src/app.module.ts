@@ -16,6 +16,7 @@ import { GlobalResponseInterceptor } from './middleware/interceptor/global-respo
 import GlobalExceptionFilter from './middleware/filter/global-exception.filter';
 import { RolesModule } from './modules/users/roles/roles.module';
 import { PermissionsModule } from './modules/users/permissions/permissions.module';
+import { RolesGuard } from './middleware/guard/roles.guard';
 
 @Module({
   imports: [
@@ -50,10 +51,15 @@ import { PermissionsModule } from './modules/users/permissions/permissions.modul
       provide: APP_INTERCEPTOR,
       useClass: GlobalResponseInterceptor,
     },
-    // 启用全局身份验证（Authentication）
+    // 全局身份验证
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    // 全局权限验证
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
