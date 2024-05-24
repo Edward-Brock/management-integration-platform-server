@@ -44,6 +44,8 @@ model Role {
   description String?
   users       UserRole[]
   permissions RolePermission[]
+  createdAt   DateTime         @default(dbgenerated("NOW()")) @db.DateTime
+  updatedAt   DateTime         @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
 }
 
 model UserRole {
@@ -61,6 +63,8 @@ model Permission {
   name        String
   description String?
   roles       RolePermission[]
+  createdAt   DateTime         @default(dbgenerated("NOW()")) @db.DateTime
+  updatedAt   DateTime         @default(dbgenerated("NOW() ON UPDATE NOW()")) @db.Timestamp(0)
 }
 
 model RolePermission {

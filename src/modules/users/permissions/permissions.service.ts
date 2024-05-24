@@ -12,7 +12,7 @@ export class PermissionsService {
 
   create(createPermissionDto: CreatePermissionDto) {
     this.logger.log(
-      `PERMISSION CREATE - ${createPermissionDto.id} - ${createPermissionDto.name}`,
+      `PERMISSION CREATE - ${createPermissionDto.id} - ${createPermissionDto.name} - ${createPermissionDto.description}`,
       'PermissionsService',
     );
     return this.prisma.permission.create({ data: createPermissionDto });

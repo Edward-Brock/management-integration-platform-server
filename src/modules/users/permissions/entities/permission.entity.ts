@@ -7,4 +7,6 @@ export class PermissionEntity implements Permission {
   name: string;
   @ApiProperty({ required: false, nullable: true })
   description: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

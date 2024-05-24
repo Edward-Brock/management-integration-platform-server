@@ -10,6 +10,44 @@ export class UsersService {
     private readonly logger: Logger,
   ) {}
 
+  async addRoleToUser(userId: string, roleId: string) {
+    this.logger.log(
+      `USER ID ${userId} ADDED THE ${roleId} ROLE`,
+      'UsersService',
+    );
+    return this.prisma.userRole.create({
+      data: {
+        userId: userId,
+        roleId: roleId,
+      },
+    });
+  }
+
+  async getUserRolesAndPermissions(userId: string) {
+    this.logger.log(
+      `USER ID ${userId} QUERIES ALL ROLES INCLUDED IN HIMSELF`,
+      'UsersService',
+    );
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        roles: {
+          include: {
+            role: {
+              include: {
+                permissions: {
+                  include: {
+                    permission: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   findAll() {
     return this.prisma.user.findMany();
   }

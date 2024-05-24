@@ -15,4 +15,6 @@ export class CreateRoleDto {
   @IsOptional()
   @IsString()
   description?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

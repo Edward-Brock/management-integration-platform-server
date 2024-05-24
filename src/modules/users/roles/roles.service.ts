@@ -10,9 +10,39 @@ export class RolesService {
     private readonly logger: Logger,
   ) {}
 
+  async addPermissionToRole(roleId: string, permissionId: string) {
+    this.logger.log(
+      `ROLE ID ${roleId} ADDED THE ${permissionId} PERMISSION`,
+      'RolesService',
+    );
+    return this.prisma.rolePermission.create({
+      data: {
+        roleId: roleId,
+        permissionId: permissionId,
+      },
+    });
+  }
+
+  async getRolePermissions(roleId: string) {
+    this.logger.log(
+      `ROLE ID ${roleId} QUERIES ALL ROLES INCLUDED IN HIMSELF`,
+      'RolesService',
+    );
+    return this.prisma.role.findUnique({
+      where: { id: roleId },
+      include: {
+        permissions: {
+          include: {
+            permission: true,
+          },
+        },
+      },
+    });
+  }
+
   create(createRoleDto: CreateRoleDto) {
     this.logger.log(
-      `ROLE CREATE - ${createRoleDto.id} - ${createRoleDto.name}`,
+      `ROLE CREATE - ${createRoleDto.id} - ${createRoleDto.name} - ${createRoleDto.description}`,
       'RolesService',
     );
     return this.prisma.role.create({ data: createRoleDto });

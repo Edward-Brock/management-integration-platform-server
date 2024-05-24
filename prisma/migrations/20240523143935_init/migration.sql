@@ -23,6 +23,8 @@ CREATE TABLE `Role` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
+    `createdAt` DATETIME NOT NULL DEFAULT NOW(),
+    `updatedAt` TIMESTAMP(0) NOT NULL DEFAULT NOW() ON UPDATE NOW(),
 
     UNIQUE INDEX `Role_id_key`(`id`),
     UNIQUE INDEX `Role_name_key`(`name`),
@@ -42,6 +44,8 @@ CREATE TABLE `Permission` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
+    `createdAt` DATETIME NOT NULL DEFAULT NOW(),
+    `updatedAt` TIMESTAMP(0) NOT NULL DEFAULT NOW() ON UPDATE NOW(),
 
     UNIQUE INDEX `Permission_id_key`(`id`),
     PRIMARY KEY (`id`)

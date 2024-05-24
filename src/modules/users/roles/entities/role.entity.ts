@@ -7,4 +7,6 @@ export class RoleEntity implements Role {
   name: string;
   @ApiProperty({ required: false, nullable: true })
   description: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

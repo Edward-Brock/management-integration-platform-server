@@ -15,4 +15,6 @@ export class CreatePermissionDto {
   @IsOptional()
   @IsString()
   description?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
