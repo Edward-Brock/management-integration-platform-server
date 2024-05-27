@@ -1,7 +1,7 @@
 {
   "name": "management-integration-platform-server",
-  "version": "0.0.32",
-  "description": "",
+  "version": "0.0.33",
+  "description": "MIP 将多种功能进行集合，达到一处使用多端融合",
   "author": "Edward Brock",
   "private": true,
   "license": "AGPL-3.0",

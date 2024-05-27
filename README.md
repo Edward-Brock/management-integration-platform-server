@@ -1,5 +1,5 @@
 # MIP SERVER
-MIP（Management Integration Platform，管理整合平台）基于 [Nest](https://github.com/nestjs/nest) 框架进行开发。
+MIP SERVER（Management Integration Platform，管理整合平台）基于 [Nest](https://github.com/nestjs/nest) 框架进行开发，MIP 前端在此[查看](https://github.com/Edward-Brock/management-integration-platform)。
 
 MIP 将多种功能进行集合，达到一处使用多端融合。
 
