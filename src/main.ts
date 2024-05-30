@@ -28,9 +28,9 @@ async function bootstrap() {
     serverAddress = http_url;
   }
   const config = new DocumentBuilder()
-    .setTitle('Management Integration Platform')
-    .setDescription('This is MIP Swagger')
-    .setVersion('1.0')
+    .setTitle(packageJson.name)
+    .setDescription(packageJson.description)
+    .setVersion(version)
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

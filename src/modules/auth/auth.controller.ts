@@ -18,11 +18,15 @@ import {
 import { UserEntity } from '../users/entities/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { Public } from './constants';
+import { UsersService } from '../users/users.service';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UsersService,
+  ) {}
 
   @Public()
   @Post('register')
@@ -57,6 +61,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return this.userService.getUserRolesAndPermissions(req.user.id);
   }
 }

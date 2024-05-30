@@ -1,6 +1,6 @@
 {
   "name": "management-integration-platform-server",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "MIP 将多种功能进行集合，达到一处使用多端融合",
   "author": "Edward Brock",
   "private": true,
@@ -12,8 +12,8 @@
     "start:dev": "cross-env SERVER_ENV=DEVELOPMENT nest start --watch",
     "start:debug": "cross-env SERVER_ENV=DEVELOPMENT nest start --debug --watch",
     "start:prod": "node dist/main",
-    "prisma:migrate": "dotenv -e .env.development.local prisma migrate dev",
-    "prisma:reset": "dotenv -e .env.development.local prisma migrate reset",
+    "prisma:migrate": "dotenv -e .env.development prisma migrate dev",
+    "prisma:reset": "dotenv -e .env.development prisma migrate reset",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",

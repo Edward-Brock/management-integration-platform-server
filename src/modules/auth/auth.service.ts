@@ -23,7 +23,7 @@ export class AuthService {
       const { password, ...result } = user;
       return result;
     }
-    return null;
+    throw new UnauthorizedException(`Incorrect Password`);
   }
 
   async register(createUserDto: CreateUserDto) {

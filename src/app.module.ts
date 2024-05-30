@@ -26,8 +26,8 @@ import { RolesGuard } from './middleware/guard/roles.guard';
       isGlobal: true,
       envFilePath:
         process.env.SERVER_ENV === 'DEVELOPMENT'
-          ? '.env.development.local'
-          : '.env.production.local',
+          ? '.env.development'
+          : '.env.production',
     }),
     PermissionsModule,
     RolesModule,

@@ -32,12 +32,19 @@ export class UsersService {
       where: { id: userId },
       include: {
         roles: {
-          include: {
+          select: {
             role: {
-              include: {
+              select: {
+                name: true,
+                description: true,
                 permissions: {
-                  include: {
-                    permission: true,
+                  select: {
+                    permission: {
+                      select: {
+                        name: true,
+                        description: true,
+                      },
+                    },
                   },
                 },
               },
