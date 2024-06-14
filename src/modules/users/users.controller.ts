@@ -7,6 +7,9 @@ import {
   Delete,
   Post,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,11 +17,67 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 import { DynamicRoles } from '../../middleware/role/roles.decorator';
 import { RolesGuard } from '../../middleware/guard/roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  /**
+   * 头像上传
+   * @param id
+   * @param file 头像文件
+   */
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: './uploads/avatar',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          callback(null, `avatar-${uniqueSuffix}${ext}`);
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        const allowedMimeTypes = [
+          'image/jpeg',
+          'image/png',
+          'image/gif',
+          'image/webp',
+        ];
+        if (!allowedMimeTypes.includes(file.mimetype)) {
+          callback(
+            new BadRequestException('Only image files are allowed!'),
+            false,
+          );
+        } else {
+          callback(null, true);
+        }
+      },
+      limits: {
+        fields: 1,
+        fileSize: 1024 * 1024 * 2, // 限制文件大小为2MB
+      },
+    }),
+  )
+  async uploadAvatar(
+    @Body('id') id: string,
+    @UploadedFile()
+    file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('File is not valid');
+    }
+    // 将上传成功的图片路径更新替换当前用户头像
+    return await this.usersService.update(id, {
+      avatar: file.path,
+    });
+  }
 
   /**
    * 将 userId 绑定角色
