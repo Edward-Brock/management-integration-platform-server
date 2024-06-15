@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -28,7 +29,7 @@ export class UsersController {
 
   /**
    * 头像上传
-   * @param id
+   * @param req
    * @param file 头像文件
    */
   @Post('upload')
@@ -66,17 +67,20 @@ export class UsersController {
     }),
   )
   async uploadAvatar(
-    @Body('id') id: string,
+    @Req() req,
     @UploadedFile()
     file: Express.Multer.File,
   ) {
+    const userId = req.user.id; // 从请求中获取用户ID
     if (!file) {
       throw new BadRequestException('File is not valid');
     }
     // 将上传成功的图片路径更新替换当前用户头像
-    return await this.usersService.update(id, {
+    const response = await this.usersService.update(userId, {
       avatar: file.path,
     });
+
+    if (response) return file;
   }
 
   /**
