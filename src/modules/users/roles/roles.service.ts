@@ -52,8 +52,8 @@ export class RolesService {
     return this.prisma.role.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.role.findUnique({ where: { id } });
+  findOne(name: string) {
+    return this.prisma.role.findUnique({ where: { name } });
   }
 
   update(id: string, updateRoleDto: UpdateRoleDto) {

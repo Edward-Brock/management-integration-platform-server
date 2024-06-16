@@ -6,14 +6,19 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { DynamicRoles } from '../../../middleware/role/roles.decorator';
+import { RolesGuard } from '../../../middleware/guard/roles.guard';
 
 @Controller('roles')
 @ApiTags('roles')
+@DynamicRoles('ADMIN')
+@UseGuards(RolesGuard)
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
@@ -48,9 +53,9 @@ export class RolesController {
     return this.rolesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rolesService.findOne(id);
+  @Get(':name')
+  findOne(@Param('name') name: string) {
+    return this.rolesService.findOne(name);
   }
 
   @Patch(':id')

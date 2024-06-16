@@ -8,9 +8,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { PrismaModule } from '../prisma/prisma.module';
+import { RolesModule } from '../users/roles/roles.module';
 
 @Module({
   imports: [
+    RolesModule,
     PrismaModule,
     UsersModule,
     PassportModule,
