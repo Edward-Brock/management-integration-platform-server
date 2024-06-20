@@ -1,6 +1,7 @@
 import { Setting, User } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserStatusEnum } from '../enum/user-status.enum';
+import { Exclude } from 'class-transformer';
 
 export class UserEntity implements User {
   id: string;
@@ -12,15 +13,20 @@ export class UserEntity implements User {
   email: string;
   @ApiProperty()
   mobile: string;
+
   @ApiProperty()
+  @Exclude()
   password: string;
+
   @ApiProperty({ required: false, nullable: true })
   avatar: string;
-  @ApiProperty({ default: 'zh-cn' })
-  language: string;
   @ApiProperty({ default: 'ACTIVE' })
   status: UserStatusEnum;
   setting: Setting;
   createdAt: Date;
   updatedAt: Date;
+
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial);
+  }
 }

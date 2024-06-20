@@ -17,6 +17,7 @@ import GlobalExceptionFilter from './middleware/filter/global-exception.filter';
 import { RolesModule } from './modules/users/roles/roles.module';
 import { PermissionsModule } from './modules/users/permissions/permissions.module';
 import { RolesGuard } from './middleware/guard/roles.guard';
+import { ManageModule } from './modules/manage/manage.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RolesGuard } from './middleware/guard/roles.guard';
           ? '.env.development'
           : '.env.production',
     }),
+    ManageModule,
     PermissionsModule,
     RolesModule,
     SettingsModule,

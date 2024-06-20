@@ -5,8 +5,10 @@ MIP 将多种功能进行集合，达到一处使用多端融合。
 
 目前正在开发：
 - 用户模块
-- 授权模块
+- 角色模块
+- 权限模块
 - 配置模块
+- 管理模块
 
 ## 安装
 
@@ -47,4 +49,4 @@ $ pnpm run test:cov
 
 ## 许可证
 
-MIP SERVER 使用 [AGPL-3.0 license](LICENSE)。
+MIP SERVER 使用 [AGPL-3.0 license](LICENSE)

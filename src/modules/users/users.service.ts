@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,7 @@ export class UsersService {
       `USER ID ${userId} QUERIES ALL ROLES INCLUDED IN HIMSELF`,
       'UsersService',
     );
-    return this.prisma.user.findUnique({
+    const user: any = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
         roles: {
@@ -53,16 +54,27 @@ export class UsersService {
         },
       },
     });
+    if (!user) {
+      throw new Error('User not found'); // 或者使用其他适当的错误处理方式
+    }
+    return new UserEntity(user);
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  async findAll() {
+    const users = await this.prisma.user.findMany();
+    return users.map((user: UserEntity) => new UserEntity(user));
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     this.logger.log(`USER FIND - ${id}`, 'UsersService');
 
-    return this.prisma.user.findUnique({ where: { id } });
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) {
+      throw new Error('User not found'); // 或者使用其他适当的错误处理方式
+    }
+    return new UserEntity(user as UserEntity);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

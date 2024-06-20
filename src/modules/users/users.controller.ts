@@ -11,6 +11,7 @@ import {
   UploadedFile,
   BadRequestException,
   Req,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,6 +23,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
