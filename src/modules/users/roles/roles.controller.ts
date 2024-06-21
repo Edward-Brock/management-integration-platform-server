@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -15,6 +17,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { DynamicRoles } from '../../../middleware/role/roles.decorator';
 import { RolesGuard } from '../../../middleware/guard/roles.guard';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('roles')
 @ApiTags('roles')
 @DynamicRoles('ADMIN')
@@ -41,6 +44,14 @@ export class RolesController {
   @Get(':roleId/details')
   async RolePermissions(@Param('roleId') roleId: string) {
     return this.rolesService.getRolePermissions(roleId);
+  }
+
+  /**
+   * 获取所有用户包含的全部角色及权限信息
+   */
+  @Get('details')
+  async allUsersRolePermissions() {
+    return this.rolesService.allUsersRolePermissions();
   }
 
   @Post()

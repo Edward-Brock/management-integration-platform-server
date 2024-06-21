@@ -1,6 +1,6 @@
 {
   "name": "management-integration-platform-server",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "MIP 将多种功能进行集合，达到一处使用多端融合",
   "author": "Edward Brock",
   "private": true,
@@ -39,6 +39,7 @@
     "chalk": "4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "cos-nodejs-sdk-v5": "^2.14.1",
     "multer": "1.4.5-lts.1",
     "nest-winston": "^1.9.4",
     "passport": "^0.7.0",

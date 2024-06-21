@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class RolesService {
@@ -38,6 +39,35 @@ export class RolesService {
         },
       },
     });
+  }
+
+  async allUsersRolePermissions() {
+    const users: any = await this.prisma.user.findMany({
+      include: {
+        roles: {
+          select: {
+            role: {
+              select: {
+                name: true,
+                description: true,
+                permissions: {
+                  select: {
+                    permission: {
+                      select: {
+                        name: true,
+                        description: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return users.map((user: UserEntity) => new UserEntity(user));
   }
 
   create(createRoleDto: CreateRoleDto) {

@@ -1,17 +1,19 @@
 import {
-  Controller,
-  Get,
+  BadRequestException,
   Body,
-  Patch,
-  Param,
+  ClassSerializerInterceptor,
+  Controller,
   Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
   Post,
+  Req,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
-  UploadedFile,
-  BadRequestException,
-  Req,
-  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,14 +22,27 @@ import { UserEntity } from './entities/user.entity';
 import { DynamicRoles } from '../../middleware/role/roles.decorator';
 import { RolesGuard } from '../../middleware/guard/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { extname } from 'path';
+import * as COS from 'cos-nodejs-sdk-v5';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  private readonly cos: COS = new COS({
+    SecretId: process.env.COS_SECRET_ID, // 密钥Id
+    SecretKey: process.env.COS_SECRET_KEY, // 密钥Key
+  });
+  private readonly bucket: string = process.env.COS_BUCKET;
+  private readonly region: string = process.env.COS_REGION;
+  private readonly baseParams: COS.PutObjectParams = {
+    Bucket: this.bucket, // 桶名称
+    Region: this.region, // 桶的所属地域
+    Body: undefined, // 上传的文件二进制流
+    Key: '', // 文件在桶中的存储path，以及存储名称
+  };
 
   /**
    * 头像上传
@@ -37,15 +52,6 @@ export class UsersController {
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('avatar', {
-      storage: diskStorage({
-        destination: './uploads/avatar',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          callback(null, `avatar-${uniqueSuffix}${ext}`);
-        },
-      }),
       fileFilter: (req, file, callback) => {
         const allowedMimeTypes = [
           'image/jpeg',
@@ -73,16 +79,29 @@ export class UsersController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
-    const userId = req.user.id; // 从请求中获取用户ID
-    if (!file) {
-      throw new BadRequestException('File is not valid');
-    }
-    // 将上传成功的图片路径更新替换当前用户头像
-    const response = await this.usersService.update(userId, {
-      avatar: file.path,
+    const params = Object.assign(this.baseParams, {
+      Body: file.buffer,
+      Key: `/mip/avatar/${Date.now() + '-' + Math.round(Math.random() * 1e9) + extname(file.originalname)}`,
     });
-
-    if (response) return file;
+    try {
+      const res = await this.cos.putObject(params);
+      // 将 COS 返回的 Location 地址通过截取 .com 字段获取后面的字符串
+      const index = res.Location.indexOf('.com');
+      // 将 Location 重新赋值给自己
+      res.Location = res.Location.substring(index + 5);
+      // 从请求中获取用户ID
+      const userId = req.user.id;
+      if (!file) {
+        throw new BadRequestException('File is not valid');
+      }
+      // 将上传成功的图片路径更新替换当前用户头像
+      return await this.usersService.update(userId, {
+        avatar: res.Location,
+      });
+    } catch (error) {
+      await this.remove(params.Key);
+      throw new HttpException('文件上传失败', HttpStatus.BAD_REQUEST);
+    }
   }
 
   /**
