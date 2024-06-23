@@ -18,6 +18,7 @@ import { RolesModule } from './modules/users/roles/roles.module';
 import { PermissionsModule } from './modules/users/permissions/permissions.module';
 import { RolesGuard } from './middleware/guard/roles.guard';
 import { ManageModule } from './modules/manage/manage.module';
+import { TimelinesModule } from './modules/timelines/timelines.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ManageModule } from './modules/manage/manage.module';
           ? '.env.development'
           : '.env.production',
     }),
+    TimelinesModule,
     ManageModule,
     PermissionsModule,
     RolesModule,
