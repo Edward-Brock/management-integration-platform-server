@@ -26,6 +26,14 @@ export class TimelinesController {
   }
 
   /**
+   * 获取单个用户的所有时间线数据
+   */
+  @Get(':userId/allTimelines')
+  async findUserAllTimelines(@Param('userId') userId: string) {
+    return this.timelinesService.findUserAllTimelines(userId);
+  }
+
+  /**
    * 获取全部用户的所有时间线数据
    */
   @Get()
@@ -33,14 +41,6 @@ export class TimelinesController {
   @UseGuards(RolesGuard)
   findAll() {
     return this.timelinesService.findAll();
-  }
-
-  /**
-   * 获取单个用户的所有时间线数据
-   */
-  @Get(':id/allTimelines')
-  findUserAllTimeLines(@Param(':id') id: string) {
-    return this.timelinesService.findUserAllTimelines(id);
   }
 
   @Get(':id')

@@ -73,11 +73,24 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.id, role: user.role };
+    // 登录成功前对账号状态进行验证
+    switch (user.status) {
+      // 停用状态
+      case 'SUSPENDED':
+        throw new UnauthorizedException('账号已被停用');
+      // 锁定状态
+      case 'LOCKED':
+        throw new UnauthorizedException('账号已被锁定，请稍后再试');
+      // 注销（删除）状态
+      case 'INACTIVE':
+        throw new UnauthorizedException('账号或密码不正确，请重新尝试');
+    }
+
+    const payload = { username: user.username, sub: user.id };
     const token = this.jwtService.sign(payload);
     const decodedToken = this.jwtService.decode(token) as any;
     this.logger.log(
-      `USER LOGIN - ${user.uid} - ${user.username} - ${user.role}`,
+      `USER: ${user.username} , ID: ${user.id} LOGGED IN`,
       'AuthService',
     );
     return {

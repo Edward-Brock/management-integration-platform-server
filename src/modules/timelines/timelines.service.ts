@@ -20,17 +20,17 @@ export class TimelinesService {
     });
   }
 
-  findAll() {
-    return this.prisma.timeline.findMany({ where: { is_delete: false } });
-  }
-
-  findUserAllTimelines(id: string) {
+  findUserAllTimelines(userId: string) {
     return this.prisma.timeline.findMany({
-      where: { id, is_delete: false },
+      where: { userId, is_delete: false },
       orderBy: {
         createdAt: 'desc',
       },
     });
+  }
+
+  findAll() {
+    return this.prisma.timeline.findMany({ where: { is_delete: false } });
   }
 
   findOne(id: string) {
